@@ -1,0 +1,50 @@
+{% extends 'base.html' %}
+{% load crispy_forms_tags %}
+{% block content %}
+
+<div class="container mt-4 mb-5">
+    <div class="row justify-content-center">
+        <div class="col-lg-8">
+            <div class="card shadow-sm">
+                <div class="card-header {% if workout %}bg-warning text-dark{% else %}bg-primary text-white{% endif %}">
+                    <h5 class="mb-0">
+                        {% if workout %}
+                            <i class="bi bi-pencil-square"></i> Edit Workout
+                        {% else %}
+                            <i class="bi bi-plus-circle"></i> Add New Workout
+                        {% endif %}
+                    </h5>
+                </div>
+                <div class="card-body">
+                    {% if workout %}
+                    <p class="text-muted small mb-3">Update this workout so your recent activity on the dashboard stays accurate.</p>
+                    {% else %}
+                    <p class="text-muted small mb-3">Add a new workout with a clear title, type, duration, and calories burned.</p>
+                    {% endif %}
+
+                    {% if form.errors %}
+                    <div class="alert alert-danger small" role="alert">
+                        Please check the form fields below and try again.
+                    </div>
+                    {% endif %}
+
+                    <form method="post" novalidate>
+                        {% csrf_token %}
+                        {{ form|crispy }}
+
+                        <div class="d-grid gap-2 d-md-flex justify-content-md-end mt-4">
+                            <button type="submit" class="btn {% if workout %}btn-warning{% else %}btn-primary{% endif %}">
+                                <i class="bi bi-check-circle"></i> Save Workout
+                            </button>
+                            <a href="{% url 'workout_list' %}" class="btn btn-outline-secondary">
+                                Cancel
+                            </a>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+{% endblock %}

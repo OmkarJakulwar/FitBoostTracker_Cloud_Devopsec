@@ -1,0 +1,49 @@
+{% extends 'base.html' %}
+{% load crispy_forms_tags %}
+{% block content %}
+<div class="container mt-4 mb-5">
+    <div class="row justify-content-center">
+        <div class="col-lg-8">
+            <div class="card shadow-sm">
+                <div class="card-header {% if exercise %}bg-warning text-dark{% else %}bg-primary text-white{% endif %}">
+                    <h5 class="mb-0">
+                        {% if exercise %}
+                            <i class="bi bi-pencil-square"></i> Edit Exercise
+                        {% else %}
+                            <i class="bi bi-plus-circle"></i> Add Exercise
+                        {% endif %}
+                    </h5>
+                </div>
+                <div class="card-body">
+                    <p class="text-muted small mb-2">
+                        Workout: <strong>{{ exercise.workout.title }}</strong>
+                    </p>
+
+                    {% if exercise %}
+                    <p class="text-muted small mb-3">Review and adjust this exercise entry. Your previous values are already filled in.</p>
+                    {% else %}
+                    <p class="text-muted small mb-3">Add a new exercise record for this workout.</p>
+                    {% endif %}
+
+                    {% if form.errors %}
+                    <div class="alert alert-danger small" role="alert">
+                        Please check the form fields below and try again.
+                    </div>
+                    {% endif %}
+
+                    <form method="post" novalidate>
+                        {% csrf_token %}
+                        {{ form|crispy }}
+                        <div class="d-grid gap-2 d-md-flex justify-content-md-end mt-4">
+                            <button type="submit" class="btn {% if exercise %}btn-warning{% else %}btn-primary{% endif %}">
+                                <i class="bi bi-check-circle"></i> Save Exercise
+                            </button>
+                            <a href="{% url 'exercise_list' exercise.workout.id %}" class="btn btn-outline-secondary">Cancel</a>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

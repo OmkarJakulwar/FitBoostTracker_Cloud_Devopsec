@@ -1,0 +1,39 @@
+# Python bytecode
+__pycache__/
+*.pyc
+
+# Coverage files
+.coverage
+coverage.xml
+
+# Django media uploads (do NOT commit user content)
+media/
+media/*
+
+# Static files (only ignore if you collect with collectstatic)
+staticfiles/
+static/
+
+# Database files
+*.sqlite3
+
+# Virtual environments
+venv/
+.venv/
+
+# Environment variables
+.env
+*.env
+
+# IDE files
+.vscode/
+.idea/
+
+# Logs
+*.log
+
+# SonarCloud generated files (NOT sonar-project.properties!)
+.scannerwork/
+
+# Mac / OS files
+.DS_Store

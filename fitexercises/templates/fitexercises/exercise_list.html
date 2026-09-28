@@ -1,0 +1,108 @@
+{% extends 'base.html' %}
+{% block content %}
+<div class="container mt-4 mb-4">
+    <div class="d-flex justify-content-between align-items-center mb-3">
+        <div>
+            <h2 class="mb-1">Exercises for "{{ workout.title }}"</h2>
+            <p class="text-muted mb-0">Review and update the details for each exercise in this workout.</p>
+        </div>
+        <a href="{% url 'exercise_add' workout.id %}" class="btn btn-success">
+            <i class="bi bi-plus-circle me-1"></i> Add Exercise
+        </a>
+    </div>
+
+    {% if exercises %}
+    <div class="table-responsive shadow-sm rounded-3 mb-3">
+        <table class="table table-striped align-middle mb-0">
+            <thead class="table-light">
+                <tr>
+                    <th>Name</th>
+                    <th class="text-center">Sets</th>
+                    <th class="text-center">Reps</th>
+                    <th class="text-center">Weight</th>
+                    <th class="text-center">Distance</th>
+                    <th>Notes</th>
+                    <th class="text-center">Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for exercise in exercises %}
+                <tr>
+                    <td>{{ exercise.name }}</td>
+                    <td class="text-center">{{ exercise.sets }}</td>
+                    <td class="text-center">{{ exercise.reps }}</td>
+                    <td class="text-center">{{ exercise.weight }} kg</td>
+                    <td class="text-center">{{ exercise.distance }} km</td>
+                    <td>{{ exercise.notes }}</td>
+                    <td class="text-center">
+                        <a href="{% url 'exercise_edit' exercise.id %}" class="btn btn-sm btn-outline-primary me-1">
+                            <i class="bi bi-pencil-square"></i>
+                        </a>
+
+                        <button type="button" class="btn btn-sm btn-outline-danger" data-bs-toggle="modal"
+                            data-bs-target="#deleteExerciseModal{{ exercise.id }}">
+                            <i class="bi bi-trash"></i>
+                        </button>
+
+                        <div class="modal fade" id="deleteExerciseModal{{ exercise.id }}" tabindex="-1"
+                            aria-labelledby="deleteExerciseLabel{{ exercise.id }}" aria-hidden="true">
+                            <div class="modal-dialog modal-dialog-centered">
+                                <div class="modal-content">
+                                    <div class="modal-header bg-danger text-white">
+                                        <h5 class="modal-title" id="deleteExerciseLabel{{ exercise.id }}">Delete exercise</h5>
+                                        <button type="button" class="btn-close" data-bs-dismiss="modal"
+                                            aria-label="Close"></button>
+                                    </div>
+                                    <div class="modal-body">
+                                        Are you sure you want to remove <strong>{{ exercise.name }}</strong> from this workout?
+                                    </div>
+                                    <div class="modal-footer">
+                                        <form method="post" action="{% url 'exercise_delete' exercise.id %}">
+                                            {% csrf_token %}
+                                            <button type="submit" class="btn btn-danger">Yes, delete</button>
+                                        </form>
+                                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+
+    {% if page_obj.has_other_pages %}
+    <nav aria-label="Exercise list pages" class="mt-3">
+        <ul class="pagination pagination-sm justify-content-end mb-0">
+            {% if page_obj.has_previous %}
+            <li class="page-item">
+                <a class="page-link" href="?page={{ page_obj.previous_page_number }}">Previous</a>
+            </li>
+            {% else %}
+            <li class="page-item disabled"><span class="page-link">Previous</span></li>
+            {% endif %}
+
+            <li class="page-item disabled">
+                <span class="page-link">Page {{ page_obj.number }} of {{ page_obj.paginator.num_pages }}</span>
+            </li>
+
+            {% if page_obj.has_next %}
+            <li class="page-item">
+                <a class="page-link" href="?page={{ page_obj.next_page_number }}">Next</a>
+            </li>
+            {% else %}
+            <li class="page-item disabled"><span class="page-link">Next</span></li>
+            {% endif %}
+        </ul>
+    </nav>
+    {% endif %}
+    {% else %}
+    <div class="text-center text-muted py-5">
+        <i class="bi bi-inbox" style="font-size: 3rem;"></i>
+        <p class="mt-3">No exercises logged yet. Add your first one to get started.</p>
+    </div>
+    {% endif %}
+</div>
+{% endblock %}

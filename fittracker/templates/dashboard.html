@@ -1,0 +1,102 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block content %}
+<div class="container mt-4 mb-5">
+    <!-- Header -->
+    <div class="d-flex justify-content-between align-items-center mb-3">
+        <div>
+            <h2 class="fw-bold text-primary mb-1">
+                <i class="bi bi-person-circle me-2"></i> Welcome, {{ request.user.username }} !! <!--Added this !! exlamation demo for source code change in deployment-->
+            </h2>
+            <p class="text-muted mb-0">Here is a quick view of your latest activity and progress.</p>
+        </div>
+    </div>
+
+    <!-- Stat Cards -->
+    <div class="row g-4 mb-4">
+        {% for card in dashboard_cards %}
+        <div class="col-sm-6 col-md-3">
+            <div class="card stat-card text-center shadow-sm h-100">
+                <div class="card-body">
+                    <i class="bi {{ card.icon }} text-{{ card.color }} stat-card-icon"></i>
+                    <p class="stat-card-label text-muted mb-1">{{ card.label }}</p>
+                    <p class="h3 fw-bold mb-0">{{ card.value }}</p>
+                </div>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+
+    <!-- Latest Activity -->
+    <div class="row g-4 mb-4">
+        <div class="col-md-4">
+            <div class="card shadow-sm h-100">
+                <div class="card-header bg-success text-white"><strong>Latest Workout</strong></div>
+                <div class="card-body">
+                    {% if latest_workout %}
+                    <p><strong>Title:</strong> {{ latest_workout.title }}</p>
+                    <p><strong>Type:</strong> {{ latest_workout.get_workout_type_display }}</p>
+                    <p><strong>Duration:</strong> {{ latest_workout.duration }} min</p>
+                    <p><strong>Calories:</strong> {{ latest_workout.calories_burned }} kcal</p>
+                    {% else %}
+                    <p class="text-muted mb-0">No workouts logged yet.</p>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-4">
+            <div class="card shadow-sm h-100">
+                <div class="card-header bg-primary text-white"><strong>Latest Exercise</strong></div>
+                <div class="card-body">
+                    {% if latest_exercise %}
+                    <p><strong>Name:</strong> {{ latest_exercise.name }}</p>
+                    <p><strong>Reps:</strong> {{ latest_exercise.reps }}</p>
+                    <p><strong>Sets:</strong> {{ latest_exercise.sets }}</p>
+                    {% else %}
+                    <p class="text-muted mb-0">No exercises logged yet.</p>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-4">
+            <div class="card shadow-sm h-100">
+                <div class="card-header bg-info text-white"><strong>My Profile</strong></div>
+                <div class="card-body">
+                    <p><strong>Name:</strong> {{ request.user.first_name }} {{ request.user.last_name }}</p>
+                    <p><strong>Goal:</strong> {{ profile.fitness_goal }}</p>
+                    <p><strong>BMI:</strong> {{ profile.calculate_bmi }}</p>
+                    <a href="{% url 'profile' %}" class="btn btn-outline-info mt-2">View Profile</a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Charts -->
+    <div class="row g-4 mb-4">
+        <div class="col-md-6 col-lg-4">
+            <div class="card shadow-sm h-100 chart-card">
+                <div class="card-header bg-white"><strong>Weekly Progress</strong></div>
+                <div class="card-body"><canvas id="progressChart" height="100"></canvas></div>
+            </div>
+        </div>
+        <div class="col-md-6 col-lg-4">
+            <div class="card shadow-sm h-100 chart-card">
+                <div class="card-header bg-white"><strong>Calories Burned Per Day</strong></div>
+                <div class="card-body"><canvas id="caloriesChart" height="100"></canvas></div>
+            </div>
+        </div>
+        <div class="col-md-6 col-lg-4">
+            <div class="card shadow-sm h-100 chart-card">
+                <div class="card-header bg-white"><strong>Exercise Breakdown</strong></div>
+                <div class="card-body"><canvas id="exerciseChart" height="100"></canvas></div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Chart Scripts -->
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script src="{% static 'js/progressChart.js' %}"></script>
+{% endblock %}

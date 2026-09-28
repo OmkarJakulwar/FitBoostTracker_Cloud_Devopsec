@@ -1,0 +1,65 @@
+{% extends 'base.html' %}
+{% load crispy_forms_tags %}
+{% block content %}
+<div class="container mt-4 mb-5">
+    <div class="row justify-content-center">
+        <div class="col-lg-8">
+            <div class="card shadow-sm">
+                <div class="card-header {% if exercise %}bg-warning text-dark{% else %}bg-primary text-white{% endif %}">
+                    <h5 class="mb-0">
+                        {% if exercise %}
+                            <i class="bi bi-pencil-square"></i> Edit Exercise
+                        {% else %}
+                            <i class="bi bi-plus-circle"></i> Add Exercise
+                        {% endif %}
+                    </h5>
+                </div>
+                <div class="card-body">
+                    <p class="text-muted small mb-2">
+                        Workout: <strong>{{ workout.title }}</strong>
+                    </p>
+
+                    {% if exercise %}
+                    <p class="text-muted small mb-3">Fine‑tune this exercise so the workout log stays clear and accurate.</p>
+                    {% else %}
+                    <p class="text-muted small mb-3">Add an exercise with sets, reps, and any notes you want to remember.</p>
+                    {% endif %}
+
+                    {% if form.errors %}
+                    <div class="alert alert-danger small" role="alert">
+                        Please check the form fields below and try again.
+                    </div>
+                    {% endif %}
+
+                    <form method="post" novalidate>
+                        {% csrf_token %}
+                        {{ form|crispy }}
+                        <div class="d-grid gap-2 d-md-flex justify-content-md-end mt-4">
+                            <button type="submit" class="btn {% if exercise %}btn-warning{% else %}btn-primary{% endif %}">
+                                <i class="bi bi-check-circle"></i> Save Exercise
+                            </button>
+                            <a href="{% url 'exercise_list' workout.id %}" class="btn btn-outline-secondary">Cancel</a>
+                        </div>
+                    </form>
+
+                    <!-- Simple live summary under the form -->
+                    <div class="mt-4 p-3 border rounded bg-light" id="exercise-summary-box">
+                        <h6 class="mb-2">Planned exercise summary</h6>
+                        <p class="small mb-1" id="exerciseSummaryText">
+                            Start filling in the fields above to see a quick summary here.
+                        </p>
+                        <p class="small text-muted mb-0">
+                            Name and at least one of <strong>sets / reps / distance</strong> should be provided so your
+                            logs stay meaningful.
+                        </p>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+</div>
+</div>
+
+{% load static %}
+<script src="{% static 'js/exerciseSummary.js' %}"></script>
+{% endblock %}
